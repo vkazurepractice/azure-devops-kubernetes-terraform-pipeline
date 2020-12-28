@@ -16,7 +16,7 @@ stages:
   jobs:
   - job: run_build
     pool:
-      vmImage: 'Ubuntu 16.04'
+      vmImage: $(operatingSystem)
     steps:
     - script: echo Build
     
