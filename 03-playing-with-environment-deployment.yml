@@ -12,26 +12,28 @@ pool:
   vmImage: $(operatingSystem)
 
 stages:
-- stage: Build
+- stage: build
   jobs:
-  - job: BuildJob
+  - job: run_build
+    pool:
+      vmImage: 'Ubuntu 16.04'
     steps:
-    - bash: echo "Do the build"
-- stage: DevDeploy
+    - script: echo Build
+    
+- stage: staging
+  dependsOn: build
   jobs:
-  - deployment: DevDeployJob
-    environment: Dev
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - script: echo deploy to Dev
-- stage: QADeploy
+  - job: deploy_staging
+    pool:
+      vmImage: $(operatingSystem)
+    steps:
+    - script: echo Staging
+
+- stage: prod
+  dependsOn: staging
   jobs:
-  - deployment: QADeployJob
-    environment: QA
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - script: echo deploy to QA
+  - job: deploy_prod
+    pool:
+      vmImage: $(operatingSystem)
+    steps:
+    - script: echo Prod
